@@ -14,8 +14,8 @@ ScreenGui.Name = "Redixum_V14_Color"
 ScreenGui.ResetOnSpawn = false
 
 local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.new(0, 360, 0, 500) -- Renk seçici için boyutu büyüttüm
-Main.Position = UDim2.new(0.5, -180, 0.5, -250)
+Main.Size = UDim2.new(0, 360, 0, 520)
+Main.Position = UDim2.new(0.5, -180, 0.5, -260)
 Main.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 Main.Active = true
 Main.Draggable = true
@@ -47,15 +47,15 @@ local function AddInput(ph, pos)
     return f
 end
 
-local NameInput = AddInput("İsim Değiştir", UDim2.new(0.05, 0, 0.12, 0))
-local RankInput = AddInput("Rütbe Değiştir", UDim2.new(0.05, 0, 0.22, 0))
-local TeamInput = AddInput("Takım Değiştir", UDim2.new(0.05, 0, 0.32, 0))
-local ColorInput = AddInput("Renk Yaz (Örn: 255,0,0)", UDim2.new(0.05, 0, 0.42, 0))
+local NameInput = AddInput("İsim Değiştir", UDim2.new(0.05, 0, 0.1, 0))
+local RankInput = AddInput("Rütbe Değiştir", UDim2.new(0.05, 0, 0.2, 0))
+local TeamInput = AddInput("Takım Değiştir", UDim2.new(0.05, 0, 0.3, 0))
+local ColorInput = AddInput("Manuel RGB (Örn: 255,0,0)", UDim2.new(0.05, 0, 0.4, 0))
 
--- HIZLI RENK SEÇİCİ (Scroll)
+-- RENK SEÇİCİ (Scrollable List)
 local Scroll = Instance.new("ScrollingFrame", Main)
 Scroll.Size = UDim2.new(0.9, 0, 0, 60)
-Scroll.Position = UDim2.new(0.05, 0, 0.52, 0)
+Scroll.Position = UDim2.new(0.05, 0, 0.5, 0)
 Scroll.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
 Scroll.CanvasSize = UDim2.new(2, 0, 0, 0)
 Scroll.ScrollBarThickness = 4
@@ -67,6 +67,7 @@ local colors = {
     ["Yeşil"] = Color3.fromRGB(0, 255, 0),
     ["Sarı"] = Color3.fromRGB(255, 255, 0),
     ["Mor"] = Color3.fromRGB(170, 0, 255),
+    ["Turuncu"] = Color3.fromRGB(255, 120, 0),
     ["Beyaz"] = Color3.fromRGB(255, 255, 255)
 }
 
@@ -80,7 +81,7 @@ for name, color in pairs(colors) do
     b.Text = name
     b.TextColor3 = Color3.new(1,1,1)
     b.Font = Enum.Font.GothamBold
-    b.TextSize = 12
+    b.TextSize = 10
     Instance.new("UICorner", b)
     b.MouseButton1Click:Connect(function()
         selectedColor = color
@@ -92,14 +93,14 @@ end
 -- ÜRET BUTONU
 local Apply = Instance.new("TextButton", Main)
 Apply.Size = UDim2.new(0.9, 0, 0, 50)
-Apply.Position = UDim2.new(0.05, 0, 0.7, 0)
+Apply.Position = UDim2.new(0.05, 0, 0.75, 0)
 Apply.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
 Apply.Text = "UYGULA"
 Apply.TextColor3 = Color3.new(1,1,1)
 Apply.Font = Enum.Font.GothamBlack
 Instance.new("UICorner", Apply)
 
--- MANTIK
+-- ÇALIŞMA MANTIĞI
 Apply.MouseButton1Click:Connect(function()
     -- RGB Yazı Kontrolü
     if ColorInput.Text ~= "" then
@@ -112,12 +113,15 @@ Apply.MouseButton1Click:Connect(function()
     for _, v in pairs(char:GetDescendants()) do
         if v:IsA("TextLabel") then
             local txt = v.Text:lower()
+            -- İsim
             if NameInput.Text ~= "" and (txt:find(Player.Name:lower()) or txt:find(Player.DisplayName:lower())) then
                 v.Text = NameInput.Text
                 v.TextColor3 = selectedColor
+            -- Rütbe
             elseif RankInput.Text ~= "" and (txt:find("guest") or v.Name:lower():find("rank")) then
                 v.Text = RankInput.Text
                 v.TextColor3 = selectedColor
+            -- Takım
             elseif TeamInput.Text ~= "" and (txt:find("sivil") or v.Name:lower():find("team")) then
                 v.Text = TeamInput.Text
                 v.TextColor3 = selectedColor
