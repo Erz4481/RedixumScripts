@@ -1,3 +1,7 @@
+-- [[ REDIXUM PREMIUM V14 - MULTI-COLOR UPDATE ]] --
+-- Project: Artvin Roleplay
+-- Launch Date: 03.03.2026
+
 local Player = game.Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -29,6 +33,7 @@ Title.TextColor3 = Color3.fromRGB(0, 120, 255)
 Title.Font = Enum.Font.GothamBlack
 Title.TextSize = 18
 
+-- ÖZEL SATIR OLUŞTURUCU (Yazı + Renk)
 local function AddRow(ph, pos, defColor)
     local input = Instance.new("TextBox", Main)
     input.Size = UDim2.new(0, 240, 0, 45)
@@ -57,6 +62,7 @@ local I_Name, C_Name = AddRow("Yeni İsim", UDim2.new(0, 20, 0, 70), "255,255,25
 local I_Rank, C_Rank = AddRow("Yeni Rütbe", UDim2.new(0, 20, 0, 130), "200,200,200")
 local I_Team, C_Team = AddRow("Yeni Takım", UDim2.new(0, 20, 0, 190), "255,0,0")
 
+-- ÜRET BUTONU
 local Apply = Instance.new("TextButton", Main)
 Apply.Size = UDim2.new(0, 350, 0, 60)
 Apply.Position = UDim2.new(0, 25, 0, 270)
@@ -66,12 +72,14 @@ Apply.TextColor3 = Color3.new(1,1,1)
 Apply.Font = Enum.Font.GothamBlack
 Instance.new("UICorner", Apply)
 
+-- RENK ÇEVİRİCİ
 local function GetColor(txt)
     local r, g, b = txt:match("(%d+),(%d+),(%d+)")
     if r and g and b then return Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b)) end
     return Color3.new(1,1,1)
 end
 
+-- ÇALIŞMA MANTIĞI
 Apply.MouseButton1Click:Connect(function()
     local char = Player.Character
     if not char then return end
@@ -79,15 +87,15 @@ Apply.MouseButton1Click:Connect(function()
     for _, v in pairs(char:GetDescendants()) do
         if v:IsA("TextLabel") then
             local txt = v.Text:lower()
-
+            -- İSİM KONTROL
             if I_Name.Text ~= "" and (txt:find(Player.Name:lower()) or txt:find(Player.DisplayName:lower())) then
                 v.Text = I_Name.Text
                 v.TextColor3 = GetColor(C_Name.Text)
-
+            -- RÜTBE KONTROL
             elseif I_Rank.Text ~= "" and (txt:find("guest") or v.Name:lower():find("rank")) then
                 v.Text = I_Rank.Text
                 v.TextColor3 = GetColor(C_Rank.Text)
-
+            -- TAKIM KONTROL
             elseif I_Team.Text ~= "" and (txt:find("sivil") or v.Name:lower():find("team")) then
                 v.Text = I_Team.Text
                 v.TextColor3 = GetColor(C_Team.Text)
@@ -96,7 +104,7 @@ Apply.MouseButton1Click:Connect(function()
     end
 end)
 
-
+-- K Tuşu Gizleme
 UserInputService.InputBegan:Connect(function(i, p)
     if not p and i.KeyCode == Enum.KeyCode.K then Main.Visible = not Main.Visible end
 end)
