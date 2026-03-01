@@ -1,21 +1,17 @@
--- [[ REDIXUM PREMIUM V14 - COLOR UPDATE ]] --
--- Project: Artvin Roleplay
--- Launch Date: 03.03.2026
-
 local Player = game.Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 local Teams = game:GetService("Teams")
 
-if CoreGui:FindFirstChild("Redixum_V14_Color") then CoreGui:FindFirstChild("Redixum_V14_Color"):Destroy() end
+if CoreGui:FindFirstChild("Redixum_V14_MultiColor") then CoreGui:FindFirstChild("Redixum_V14_MultiColor"):Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", CoreGui)
-ScreenGui.Name = "Redixum_V14_Color"
+ScreenGui.Name = "Redixum_V14_MultiColor"
 ScreenGui.ResetOnSpawn = false
 
 local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.new(0, 360, 0, 520)
-Main.Position = UDim2.new(0.5, -180, 0.5, -260)
+Main.Size = UDim2.new(0, 400, 0, 450)
+Main.Position = UDim2.new(0.5, -200, 0.5, -225)
 Main.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 Main.Active = true
 Main.Draggable = true
@@ -26,111 +22,81 @@ Stroke.Thickness = 2
 
 -- BAŞLIK
 local Title = Instance.new("TextLabel", Main)
-Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
-Title.Text = "REDIXUM COLOR PANEL"
+Title.Text = "REDIXUM MULTI-COLOR PANEL"
 Title.TextColor3 = Color3.fromRGB(0, 120, 255)
 Title.Font = Enum.Font.GothamBlack
 Title.TextSize = 18
 
--- GİRİŞ ALANLARI
-local function AddInput(ph, pos)
-    local f = Instance.new("TextBox", Main)
-    f.Size = UDim2.new(0.9, 0, 0, 40)
-    f.Position = pos
-    f.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-    f.PlaceholderText = ph
-    f.Text = ""
-    f.TextColor3 = Color3.new(1,1,1)
-    f.Font = Enum.Font.GothamBold
-    Instance.new("UICorner", f)
-    return f
+local function AddRow(ph, pos, defColor)
+    local input = Instance.new("TextBox", Main)
+    input.Size = UDim2.new(0, 240, 0, 45)
+    input.Position = pos
+    input.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    input.PlaceholderText = ph
+    input.Text = ""
+    input.TextColor3 = Color3.new(1,1,1)
+    input.Font = Enum.Font.GothamBold
+    Instance.new("UICorner", input)
+
+    local colorInput = Instance.new("TextBox", Main)
+    colorInput.Size = UDim2.new(0, 100, 0, 45)
+    colorInput.Position = pos + UDim2.new(0, 250, 0, 0)
+    colorInput.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+    colorInput.PlaceholderText = "RGB"
+    colorInput.Text = defColor
+    colorInput.TextColor3 = Color3.new(1,1,1)
+    colorInput.Font = Enum.Font.Code
+    Instance.new("UICorner", colorInput)
+
+    return input, colorInput
 end
 
-local NameInput = AddInput("İsim Değiştir", UDim2.new(0.05, 0, 0.1, 0))
-local RankInput = AddInput("Rütbe Değiştir", UDim2.new(0.05, 0, 0.2, 0))
-local TeamInput = AddInput("Takım Değiştir", UDim2.new(0.05, 0, 0.3, 0))
-local ColorInput = AddInput("Manuel RGB (Örn: 255,0,0)", UDim2.new(0.05, 0, 0.4, 0))
+local I_Name, C_Name = AddRow("Yeni İsim", UDim2.new(0, 20, 0, 70), "255,255,255")
+local I_Rank, C_Rank = AddRow("Yeni Rütbe", UDim2.new(0, 20, 0, 130), "200,200,200")
+local I_Team, C_Team = AddRow("Yeni Takım", UDim2.new(0, 20, 0, 190), "255,0,0")
 
--- RENK SEÇİCİ (Scrollable List)
-local Scroll = Instance.new("ScrollingFrame", Main)
-Scroll.Size = UDim2.new(0.9, 0, 0, 60)
-Scroll.Position = UDim2.new(0.05, 0, 0.5, 0)
-Scroll.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-Scroll.CanvasSize = UDim2.new(2, 0, 0, 0)
-Scroll.ScrollBarThickness = 4
-Instance.new("UICorner", Scroll)
-
-local colors = {
-    ["Kırmızı"] = Color3.fromRGB(255, 0, 0),
-    ["Mavi"] = Color3.fromRGB(0, 120, 255),
-    ["Yeşil"] = Color3.fromRGB(0, 255, 0),
-    ["Sarı"] = Color3.fromRGB(255, 255, 0),
-    ["Mor"] = Color3.fromRGB(170, 0, 255),
-    ["Turuncu"] = Color3.fromRGB(255, 120, 0),
-    ["Beyaz"] = Color3.fromRGB(255, 255, 255)
-}
-
-local selectedColor = Color3.new(1,1,1)
-local count = 0
-for name, color in pairs(colors) do
-    local b = Instance.new("TextButton", Scroll)
-    b.Size = UDim2.new(0, 80, 0, 40)
-    b.Position = UDim2.new(0, (count * 85) + 5, 0, 10)
-    b.BackgroundColor3 = color
-    b.Text = name
-    b.TextColor3 = Color3.new(1,1,1)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 10
-    Instance.new("UICorner", b)
-    b.MouseButton1Click:Connect(function()
-        selectedColor = color
-        ColorInput.Text = math.floor(color.R*255)..","..math.floor(color.G*255)..","..math.floor(color.B*255)
-    end)
-    count = count + 1
-end
-
--- ÜRET BUTONU
 local Apply = Instance.new("TextButton", Main)
-Apply.Size = UDim2.new(0.9, 0, 0, 50)
-Apply.Position = UDim2.new(0.05, 0, 0.75, 0)
+Apply.Size = UDim2.new(0, 350, 0, 60)
+Apply.Position = UDim2.new(0, 25, 0, 270)
 Apply.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-Apply.Text = "UYGULA"
+Apply.Text = "HEPSİNİ UYGULA"
 Apply.TextColor3 = Color3.new(1,1,1)
 Apply.Font = Enum.Font.GothamBlack
 Instance.new("UICorner", Apply)
 
--- ÇALIŞMA MANTIĞI
-Apply.MouseButton1Click:Connect(function()
-    -- RGB Yazı Kontrolü
-    if ColorInput.Text ~= "" then
-        local r, g, b = ColorInput.Text:match("(%d+),(%d+),(%d+)")
-        if r and g and b then selectedColor = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b)) end
-    end
+local function GetColor(txt)
+    local r, g, b = txt:match("(%d+),(%d+),(%d+)")
+    if r and g and b then return Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b)) end
+    return Color3.new(1,1,1)
+end
 
+Apply.MouseButton1Click:Connect(function()
     local char = Player.Character
     if not char then return end
+    
     for _, v in pairs(char:GetDescendants()) do
         if v:IsA("TextLabel") then
             local txt = v.Text:lower()
-            -- İsim
-            if NameInput.Text ~= "" and (txt:find(Player.Name:lower()) or txt:find(Player.DisplayName:lower())) then
-                v.Text = NameInput.Text
-                v.TextColor3 = selectedColor
-            -- Rütbe
-            elseif RankInput.Text ~= "" and (txt:find("guest") or v.Name:lower():find("rank")) then
-                v.Text = RankInput.Text
-                v.TextColor3 = selectedColor
-            -- Takım
-            elseif TeamInput.Text ~= "" and (txt:find("sivil") or v.Name:lower():find("team")) then
-                v.Text = TeamInput.Text
-                v.TextColor3 = selectedColor
+
+            if I_Name.Text ~= "" and (txt:find(Player.Name:lower()) or txt:find(Player.DisplayName:lower())) then
+                v.Text = I_Name.Text
+                v.TextColor3 = GetColor(C_Name.Text)
+
+            elseif I_Rank.Text ~= "" and (txt:find("guest") or v.Name:lower():find("rank")) then
+                v.Text = I_Rank.Text
+                v.TextColor3 = GetColor(C_Rank.Text)
+
+            elseif I_Team.Text ~= "" and (txt:find("sivil") or v.Name:lower():find("team")) then
+                v.Text = I_Team.Text
+                v.TextColor3 = GetColor(C_Team.Text)
             end
         end
     end
 end)
 
--- K Tuşu
+
 UserInputService.InputBegan:Connect(function(i, p)
     if not p and i.KeyCode == Enum.KeyCode.K then Main.Visible = not Main.Visible end
 end)
