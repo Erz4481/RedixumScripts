@@ -1,6 +1,6 @@
 -- [[ RENDIX STUDIO - UNIVERSAL TEAM & COLOR FORCE ]] --
--- Fix: Deep Hierarchy Support for New Games
--- Style: Compact Glass UI
+-- GitHub: https://raw.githubusercontent.com/Erz4481/RedixumScripts/refs/heads/main/v14_fix.lua
+-- Fix: Deep Scan for Sivil/İnzibat/Rank Labels
 
 local Players = game:GetService("Players")
 local Teams = game:GetService("Teams")
@@ -14,7 +14,7 @@ local ScreenGui = Instance.new("ScreenGui", Player.PlayerGui)
 ScreenGui.Name = "REDIX_V14_FIX"
 ScreenGui.ResetOnSpawn = false
 
--- ANA PANEL (Kompakt ve Ortalanmış)
+-- ANA PANEL (Kompakt Glass Tasarımı)
 local Main = Instance.new("Frame", ScreenGui)
 Main.Size = UDim2.fromOffset(450, 360)
 Main.Position = UDim2.fromScale(0.5, 0.5)
@@ -26,7 +26,6 @@ local Stroke = Instance.new("UIStroke", Main)
 Stroke.Color = Color3.fromRGB(85, 95, 210)
 Stroke.Thickness = 2
 
--- SCROLL VE LAYOUT
 local Content = Instance.new("ScrollingFrame", Main)
 Content.Size = UDim2.new(1, -30, 1, -80)
 Content.Position = UDim2.new(0, 15, 0, 15)
@@ -36,7 +35,7 @@ Content.ScrollBarThickness = 0
 local Layout = Instance.new("UIListLayout", Content)
 Layout.Padding = UDim.new(0, 8)
 
--- INPUT OLUŞTURUCU
+-- INPUT SİSTEMİ
 local function CreateInp(title, place)
     local f = Instance.new("Frame", Content)
     f.Size = UDim2.new(1, 0, 0, 40)
@@ -67,7 +66,7 @@ end
 local I_Name, C_Name = CreateInp("İSİM", "Metin...")
 local I_Rank, C_Rank = CreateInp("RÜTBE", "Kral...")
 
--- TAKIM SEÇİMİ (DROPDOWN)
+-- TAKIM SEÇİMİ
 local SelTeam, SelCol = "", nil
 local DropBtn = Instance.new("TextButton", Content)
 DropBtn.Size = UDim2.new(1, 0, 0, 40)
@@ -103,7 +102,7 @@ for _, t in pairs(Teams:GetTeams()) do
     end)
 end
 
--- GÜNCELLE BUTONU (ZORLAYICI MANTIK)
+-- GÜNCELLEME VE FORCE MANTIĞI
 local Apply = Instance.new("TextButton", Main)
 Apply.Size = UDim2.new(1, -30, 0, 50)
 Apply.Position = UDim2.new(0.5, 0, 1, -35)
@@ -125,7 +124,7 @@ Apply.MouseButton1Click:Connect(function()
 
     local nC, rC = GetRGB(C_Name.Text), GetRGB(C_Rank.Text)
 
-    -- UNIVERSAL SCAN: Billboard içindeki tüm TextLabelları bul ve konumuna göre ayır
+    -- Nametag taraması ve konum bazlı tespit
     for _, tag in pairs(char:GetDescendants()) do
         if tag:IsA("BillboardGui") then
             local labels = {}
@@ -133,22 +132,22 @@ Apply.MouseButton1Click:Connect(function()
                 if v:IsA("TextLabel") and v.Visible then table.insert(labels, v) end
             end
             
-            -- Y eksenine göre sırala (En üstteki isimdir)
+            -- Ekrandaki yüksekliğe göre sırala (Üstten alta)
             table.sort(labels, function(a, b) return a.AbsolutePosition.Y < b.AbsolutePosition.Y end)
 
-            -- İsim (En Üst)
+            -- İSİM (En Üstteki Yazı)
             if #labels >= 1 and I_Name.Text ~= "" then
                 labels[1].Text = I_Name.Text
                 labels[1].TextColor3 = nC
                 labels[1]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[1].TextColor3 = nC end)
             end
-            -- Rütbe (Orta)
+            -- RÜTBE (Ortadaki Yazı)
             if #labels >= 2 and I_Rank.Text ~= "" then
                 labels[2].Text = I_Rank.Text
                 labels[2].TextColor3 = rC
                 labels[2]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[2].TextColor3 = rC end)
             end
-            -- Takım (En Alt - Sivil/İnzibat vs.)
+            -- TAKIM (En Alttaki Yazı - Sivil/İnzibat Fix)
             if #labels >= 3 and SelTeam ~= "" then
                 labels[#labels].Text = SelTeam
                 labels[#labels].TextColor3 = SelCol
@@ -158,7 +157,7 @@ Apply.MouseButton1Click:Connect(function()
     end
 end)
 
--- MOBİL RE BUTONU
+-- MOBİL AÇ/KAPAT
 local Mob = Instance.new("TextButton", ScreenGui)
 Mob.Size = UDim2.fromOffset(50, 50)
 Mob.Position = UDim2.new(1, -60, 0.5, -25)
