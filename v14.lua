@@ -1,6 +1,6 @@
--- [[ TA 1.0 - ELITE CUSTOM HUB ]] --
+-- [[ TA 1.0 - RENDIX ELITE MASTER ]] --
 -- Style: Rendix Studio Custom Elite
--- Features: Real-time FPS, Ping, Independent Colors
+-- Device: Mobile & PC & All Executors Compatible
 
 local Player = game.Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
@@ -9,73 +9,66 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 -- ESKİ UI TEMİZLEME
-if CoreGui:FindFirstChild("RENDIX_ELITE_HUB") then CoreGui:FindFirstChild("RENDIX_ELITE_HUB"):Destroy() end
+if CoreGui:FindFirstChild("RENDIX_MASTER_HUB") then CoreGui:FindFirstChild("RENDIX_MASTER_HUB"):Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", CoreGui)
-ScreenGui.Name = "RENDIX_ELITE_HUB"
+ScreenGui.Name = "RENDIX_MASTER_HUB"
+ScreenGui.ResetOnSpawn = false
 
--- ANA PANEL (Görseldeki VOID Tarzı - Modern & İnce)
+-- ANA PANEL (Premium Modern Tasarım)
 local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.new(0, 540, 0, 340)
-Main.Position = UDim2.new(0.5, -270, 0.5, -170)
-Main.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+Main.Size = UDim2.new(0, 540, 0, 350)
+Main.Position = UDim2.new(0.5, -270, 0.5, -175)
+Main.BackgroundColor3 = Color3.fromRGB(12, 12, 15)
 Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 
--- SOL SIDEBAR (Premium Gradiant)
+-- ÜST PANEL (Görseldeki Kalitesiz Bloklar Yerine Modern Bar)
+local TopBar = Instance.new("Frame", Main)
+TopBar.Size = UDim2.new(1, 0, 0, 45)
+TopBar.BackgroundTransparency = 1
+
+local Title = Instance.new("TextLabel", TopBar)
+Title.Size = UDim2.new(0, 200, 1, 0)
+Title.Position = UDim2.new(0, 85, 0, 0)
+Title.Text = "RENDIX STUDIO | ELITE"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 15
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- FPS & PING (Gerçek Zamanlı)
+local Stats = Instance.new("TextLabel", TopBar)
+Stats.Size = UDim2.new(0, 150, 1, 0)
+Stats.Position = UDim2.new(1, -160, 0, 0)
+Stats.BackgroundTransparency = 1
+Stats.Text = "FPS: -- | MS: --"
+Stats.TextColor3 = Color3.fromRGB(0, 255, 150)
+Stats.Font = Enum.Font.GothamBold
+Stats.TextSize = 11
+Stats.TextXAlignment = Enum.TextXAlignment.Right
+
+RunService.RenderStepped:Connect(function(dt)
+    local fps = math.floor(1/dt)
+    local ping = math.floor(Player:GetNetworkPing() * 1000)
+    Stats.Text = string.format("FPS: %d | MS: %d", fps, ping)
+end)
+
+-- SOL SIDEBAR
 local Sidebar = Instance.new("Frame", Main)
 Sidebar.Size = UDim2.new(0, 75, 1, 0)
-Sidebar.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
+Sidebar.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
 Sidebar.BorderSizePixel = 0
 Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 10)
 
--- LOGO ALANI
-local Logo = Instance.new("TextLabel", Main)
-Logo.Size = UDim2.new(0, 200, 0, 45)
-Logo.Position = UDim2.new(0, 90, 0, 5)
-Logo.Text = "RENDIX ELITE"
-Logo.TextColor3 = Color3.new(1, 1, 1)
-Logo.Font = Enum.Font.GothamBlack
-Logo.TextSize = 16
-Logo.TextXAlignment = Enum.TextXAlignment.Left
-
--- STATS (FPS & PING)
-local StatsFrame = Instance.new("Frame", Main)
-StatsFrame.Size = UDim2.new(0, 120, 0, 40)
-StatsFrame.Position = UDim2.new(1, -130, 0, 8)
-StatsFrame.BackgroundTransparency = 1
-
-local PingLabel = Instance.new("TextLabel", StatsFrame)
-PingLabel.Size = UDim2.new(1, 0, 0.5, 0)
-PingLabel.Text = "Ping: -- ms"
-PingLabel.TextColor3 = Color3.fromRGB(0, 255, 125)
-PingLabel.Font = Enum.Font.GothamBold
-PingLabel.TextSize = 11
-PingLabel.TextXAlignment = Enum.TextXAlignment.Right
-
-local FpsLabel = Instance.new("TextLabel", StatsFrame)
-FpsLabel.Size = UDim2.new(1, 0, 0.5, 0)
-FpsLabel.Position = UDim2.new(0, 0, 0.5, 0)
-FpsLabel.Text = "FPS: --"
-FpsLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-FpsLabel.Font = Enum.Font.GothamBold
-FpsLabel.TextSize = 11
-FpsLabel.TextXAlignment = Enum.TextXAlignment.Right
-
--- FPS/PING GÜNCELLEYİCİ
-RunService.RenderStepped:Connect(function(dt)
-    FpsLabel.Text = "FPS: " .. math.floor(1/dt)
-    PingLabel.Text = "Ping: " .. math.floor(Player:GetNetworkPing() * 1000) .. " ms"
-end)
-
--- AYAR SATIRI (Özel Tasarım)
+-- AYAR SATIRLARI
 local function CreateEliteRow(txt, y)
     local frame = Instance.new("Frame", Main)
-    frame.Size = UDim2.new(1, -105, 0, 45)
-    frame.Position = UDim2.new(0, 90, 0, y)
-    frame.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+    frame.Size = UDim2.new(1, -100, 0, 45)
+    frame.Position = UDim2.new(0, 85, 0, y)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
     Instance.new("UICorner", frame)
 
     local label = Instance.new("TextLabel", frame)
@@ -84,43 +77,43 @@ local function CreateEliteRow(txt, y)
     label.Text = txt
     label.TextColor3 = Color3.fromRGB(180, 180, 180)
     label.Font = Enum.Font.GothamBold
-    label.TextSize = 12
+    label.TextSize = 11
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.BackgroundTransparency = 1
 
-    local inp = Instance.new("TextBox", frame)
-    inp.Size = UDim2.new(0, 140, 0, 32)
-    inp.Position = UDim2.new(0.38, 0, 0.5, -16)
-    inp.BackgroundColor3 = Color3.fromRGB(28, 28, 35)
-    inp.PlaceholderText = "Metin..."
-    inp.Text = ""
-    inp.TextColor3 = Color3.new(1, 1, 1)
-    inp.Font = Enum.Font.Gotham
-    inp.TextSize = 11
-    Instance.new("UICorner", inp)
+    local input = Instance.new("TextBox", frame)
+    input.Size = UDim2.new(0, 150, 0, 30)
+    input.Position = UDim2.new(0.38, 0, 0.5, -15)
+    input.BackgroundColor3 = Color3.fromRGB(28, 28, 35)
+    input.PlaceholderText = "Metin..."
+    input.Text = ""
+    input.TextColor3 = Color3.new(1, 1, 1)
+    input.Font = Enum.Font.Gotham
+    input.TextSize = 11
+    Instance.new("UICorner", input)
 
-    local clr = Instance.new("TextBox", frame)
-    clr.Size = UDim2.new(0, 85, 0, 32)
-    clr.Position = UDim2.new(0.75, 0, 0.5, -16)
-    clr.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-    clr.PlaceholderText = "RGB"
-    clr.Text = "255,255,255"
-    clr.TextColor3 = Color3.new(1, 1, 1)
-    clr.Font = Enum.Font.Code
-    clr.TextSize = 10
-    Instance.new("UICorner", clr)
+    local color = Instance.new("TextBox", frame)
+    color.Size = UDim2.new(0, 85, 0, 30)
+    color.Position = UDim2.new(0.76, 0, 0.5, -15)
+    color.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    color.PlaceholderText = "RGB"
+    color.Text = "255,255,255"
+    color.TextColor3 = Color3.new(1, 1, 1)
+    color.Font = Enum.Font.Code
+    color.TextSize = 10
+    Instance.new("UICorner", color)
 
-    return inp, clr
+    return input, color
 end
 
-local I_Name, C_Name = CreateEliteRow("İSİM", 55)
-local I_Rank, C_Rank = CreateEliteRow("RÜTBE", 105)
+local I_Name, C_Name = CreateEliteRow("İSİM DEĞİŞTİR", 55)
+local I_Rank, C_Rank = CreateEliteRow("RÜTBE DEĞİŞTİR", 110)
 
 -- TAKIM SEÇİCİ (Modern Liste)
 local TeamFrame = Instance.new("Frame", Main)
-TeamFrame.Size = UDim2.new(1, -105, 0, 90)
-TeamFrame.Position = UDim2.new(0, 90, 0, 155)
-TeamFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
+TeamFrame.Size = UDim2.new(1, -100, 0, 100)
+TeamFrame.Position = UDim2.new(0, 85, 0, 165)
+TeamFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 Instance.new("UICorner", TeamFrame)
 
 local Scroll = Instance.new("ScrollingFrame", TeamFrame)
@@ -128,7 +121,7 @@ Scroll.Size = UDim2.new(1, -10, 1, -10)
 Scroll.Position = UDim2.new(0, 5, 0, 5)
 Scroll.BackgroundTransparency = 1
 Scroll.ScrollBarThickness = 3
-Scroll.ScrollBarImageColor3 = Color3.fromRGB(80, 90, 200)
+Scroll.ScrollBarImageColor3 = Color3.fromRGB(85, 95, 210)
 local Layout = Instance.new("UIListLayout", Scroll)
 Layout.Padding = UDim.new(0, 6)
 
@@ -146,24 +139,24 @@ for _, t in pairs(Teams:GetTeams()) do
     b.MouseButton1Click:Connect(function()
         SelectedTeam = t.Name
         SelectedColor = t.TeamColor.Color
-        Logo.Text = "TEAM: " .. t.Name:upper()
-        Logo.TextColor3 = SelectedColor
+        Title.Text = "SEÇİLDİ: " .. t.Name:upper()
+        Title.TextColor3 = SelectedColor
     end)
 end
 Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
 
--- GÜNCELLE BUTONU (Premium Blue)
+-- GÜNCELLE BUTONU (Görseldeki Gibi Mavi)
 local Apply = Instance.new("TextButton", Main)
-Apply.Size = UDim2.new(1, -105, 0, 50)
-Apply.Position = UDim2.new(0, 90, 1, -65)
-Apply.BackgroundColor3 = Color3.fromRGB(70, 80, 180)
-Apply.Text = "NAMETAGLARI SİSTEME İŞLE"
+Apply.Size = UDim2.new(1, -100, 0, 50)
+Apply.Position = UDim2.new(0, 85, 1, -65)
+Apply.BackgroundColor3 = Color3.fromRGB(85, 95, 210)
+Apply.Text = "NAMETAGLARI SİSTEME BAS"
 Apply.TextColor3 = Color3.new(1, 1, 1)
 Apply.Font = Enum.Font.GothamBlack
 Apply.TextSize = 14
 Instance.new("UICorner", Apply)
 
--- ANA İŞLEM
+-- ANA İŞLEM (İsim/Rütbe Bağımsız, Takım Oto Renk)
 Apply.MouseButton1Click:Connect(function()
     local char = Player.Character
     if not char then return end
