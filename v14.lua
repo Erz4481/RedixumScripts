@@ -1,6 +1,6 @@
--- [[ TA 1.0 - RENDIX ELITE MASTER ]] --
--- Style: Rendix Studio Custom Elite
--- Device: Mobile & PC & All Executors Compatible
+-- [[ TA 1.0 - REDIX STUDIO EDITION ]] --
+-- Style: Branded Elite UI
+-- Creator: Redixum / Redix Studio
 
 local Player = game.Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
@@ -9,52 +9,44 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 -- ESKİ UI TEMİZLEME
-if CoreGui:FindFirstChild("RENDIX_MASTER_HUB") then CoreGui:FindFirstChild("RENDIX_MASTER_HUB"):Destroy() end
+if CoreGui:FindFirstChild("REDIX_BRAND_HUB") then CoreGui:FindFirstChild("REDIX_BRAND_HUB"):Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", CoreGui)
-ScreenGui.Name = "RENDIX_MASTER_HUB"
+ScreenGui.Name = "REDIX_BRAND_HUB"
 ScreenGui.ResetOnSpawn = false
 
--- ANA PANEL (Premium Modern Tasarım)
+-- ANA PANEL
 local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.new(0, 540, 0, 350)
-Main.Position = UDim2.new(0.5, -270, 0.5, -175)
+Main.Size = UDim2.new(0, 540, 0, 340)
+Main.Position = UDim2.new(0.5, -270, 0.5, -170)
 Main.BackgroundColor3 = Color3.fromRGB(12, 12, 15)
 Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 
--- ÜST PANEL (Görseldeki Kalitesiz Bloklar Yerine Modern Bar)
+-- ÜST PANEL (BRANDING AREA)
 local TopBar = Instance.new("Frame", Main)
-TopBar.Size = UDim2.new(1, 0, 0, 45)
+TopBar.Size = UDim2.new(1, 0, 0, 50)
 TopBar.BackgroundTransparency = 1
 
-local Title = Instance.new("TextLabel", TopBar)
-Title.Size = UDim2.new(0, 200, 1, 0)
-Title.Position = UDim2.new(0, 85, 0, 0)
-Title.Text = "RENDIX STUDIO | ELITE"
-Title.TextColor3 = Color3.new(1, 1, 1)
-Title.Font = Enum.Font.GothamBlack
-Title.TextSize = 15
-Title.TextXAlignment = Enum.TextXAlignment.Left
+local ScriptTitle = Instance.new("TextLabel", TopBar)
+ScriptTitle.Size = UDim2.new(0, 250, 1, 0)
+ScriptTitle.Position = UDim2.new(0, 85, 0, 0)
+ScriptTitle.Text = "TA 1.0 | NAME CHANGER"
+ScriptTitle.TextColor3 = Color3.new(1, 1, 1)
+ScriptTitle.Font = Enum.Font.GothamBlack
+ScriptTitle.TextSize = 14
+ScriptTitle.TextXAlignment = Enum.TextXAlignment.Left
 
--- FPS & PING (Gerçek Zamanlı)
-local Stats = Instance.new("TextLabel", TopBar)
-Stats.Size = UDim2.new(0, 150, 1, 0)
-Stats.Position = UDim2.new(1, -160, 0, 0)
-Stats.BackgroundTransparency = 1
-Stats.Text = "FPS: -- | MS: --"
-Stats.TextColor3 = Color3.fromRGB(0, 255, 150)
-Stats.Font = Enum.Font.GothamBold
-Stats.TextSize = 11
-Stats.TextXAlignment = Enum.TextXAlignment.Right
-
-RunService.RenderStepped:Connect(function(dt)
-    local fps = math.floor(1/dt)
-    local ping = math.floor(Player:GetNetworkPing() * 1000)
-    Stats.Text = string.format("FPS: %d | MS: %d", fps, ping)
-end)
+local CreatorTag = Instance.new("TextLabel", TopBar)
+CreatorTag.Size = UDim2.new(0, 200, 1, 0)
+CreatorTag.Position = UDim2.new(1, -210, 0, 0)
+CreatorTag.Text = "BY REDIX STUDIO"
+CreatorTag.TextColor3 = Color3.fromRGB(0, 150, 255)
+CreatorTag.Font = Enum.Font.GothamBlack
+CreatorTag.TextSize = 13
+CreatorTag.TextXAlignment = Enum.TextXAlignment.Right
 
 -- SOL SIDEBAR
 local Sidebar = Instance.new("Frame", Main)
@@ -62,6 +54,21 @@ Sidebar.Size = UDim2.new(0, 75, 1, 0)
 Sidebar.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
 Sidebar.BorderSizePixel = 0
 Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 10)
+
+-- FPS SAYACI (Sadece FPS kalsın dedin, Ping'i kaldırdım)
+local FpsLabel = Instance.new("TextLabel", Main)
+FpsLabel.Size = UDim2.new(0, 60, 0, 20)
+FpsLabel.Position = UDim2.new(1, -70, 1, -25)
+FpsLabel.BackgroundTransparency = 1
+FpsLabel.Text = "FPS: --"
+FpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+FpsLabel.Font = Enum.Font.Code
+FpsLabel.TextSize = 10
+FpsLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+RunService.RenderStepped:Connect(function(dt)
+    FpsLabel.Text = "FPS: " .. math.floor(1/dt)
+end)
 
 -- AYAR SATIRLARI
 local function CreateEliteRow(txt, y)
@@ -106,13 +113,13 @@ local function CreateEliteRow(txt, y)
     return input, color
 end
 
-local I_Name, C_Name = CreateEliteRow("İSİM DEĞİŞTİR", 55)
-local I_Rank, C_Rank = CreateEliteRow("RÜTBE DEĞİŞTİR", 110)
+local I_Name, C_Name = CreateEliteRow("İSİM DEĞİŞTİR", 60)
+local I_Rank, C_Rank = CreateEliteRow("RÜTBE DEĞİŞTİR", 115)
 
--- TAKIM SEÇİCİ (Modern Liste)
+-- TAKIM SEÇİCİ
 local TeamFrame = Instance.new("Frame", Main)
-TeamFrame.Size = UDim2.new(1, -100, 0, 100)
-TeamFrame.Position = UDim2.new(0, 85, 0, 165)
+TeamFrame.Size = UDim2.new(1, -100, 0, 90)
+TeamFrame.Position = UDim2.new(0, 85, 0, 170)
 TeamFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 Instance.new("UICorner", TeamFrame)
 
@@ -120,8 +127,7 @@ local Scroll = Instance.new("ScrollingFrame", TeamFrame)
 Scroll.Size = UDim2.new(1, -10, 1, -10)
 Scroll.Position = UDim2.new(0, 5, 0, 5)
 Scroll.BackgroundTransparency = 1
-Scroll.ScrollBarThickness = 3
-Scroll.ScrollBarImageColor3 = Color3.fromRGB(85, 95, 210)
+Scroll.ScrollBarThickness = 2
 local Layout = Instance.new("UIListLayout", Scroll)
 Layout.Padding = UDim.new(0, 6)
 
@@ -139,24 +145,23 @@ for _, t in pairs(Teams:GetTeams()) do
     b.MouseButton1Click:Connect(function()
         SelectedTeam = t.Name
         SelectedColor = t.TeamColor.Color
-        Title.Text = "SEÇİLDİ: " .. t.Name:upper()
-        Title.TextColor3 = SelectedColor
+        ScriptTitle.Text = "SELECTED: " .. t.Name:upper()
+        ScriptTitle.TextColor3 = SelectedColor
     end)
 end
 Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
 
--- GÜNCELLE BUTONU (Görseldeki Gibi Mavi)
+-- GÜNCELLE BUTONU
 local Apply = Instance.new("TextButton", Main)
 Apply.Size = UDim2.new(1, -100, 0, 50)
 Apply.Position = UDim2.new(0, 85, 1, -65)
 Apply.BackgroundColor3 = Color3.fromRGB(85, 95, 210)
-Apply.Text = "NAMETAGLARI SİSTEME BAS"
+Apply.Text = "AYARLARI KAYDET VE UYGULA"
 Apply.TextColor3 = Color3.new(1, 1, 1)
 Apply.Font = Enum.Font.GothamBlack
 Apply.TextSize = 14
 Instance.new("UICorner", Apply)
 
--- ANA İŞLEM (İsim/Rütbe Bağımsız, Takım Oto Renk)
 Apply.MouseButton1Click:Connect(function()
     local char = Player.Character
     if not char then return end
