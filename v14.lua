@@ -1,34 +1,30 @@
--- [[ RENDIX STUDIO - AAT 1.0 SPECIAL EDITION ]] --
--- Target Game ID: 6685405568 (Osmanlı Ordusu)
--- Fix: Silent Deep Scan for AAT Nametag Structure
--- Features: Stealth Bypass, Joint TA/AAT Mode
+-- [[ RENDIX STUDIO - UNIVERSAL SUPREME v15.5 ]] --
+-- Fix: OIO, AAT and TA Game Structures
+-- Feature: Deep Billboard Injection & Layout Fix
 
 local Players = game:GetService("Players")
 local Teams = game:GetService("Teams")
-local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 
 -- UI TEMİZLİK
-if Player.PlayerGui:FindFirstChild("REDIX_FINAL_V15") then Player.PlayerGui.REDIX_FINAL_V15:Destroy() end
+if Player.PlayerGui:FindFirstChild("REDIX_SUPREME_V15") then Player.PlayerGui.REDIX_SUPREME_V15:Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", Player.PlayerGui)
-ScreenGui.Name = "REDIX_FINAL_V15"
+ScreenGui.Name = "REDIX_SUPREME_V15"
 ScreenGui.ResetOnSpawn = false
 
--- ANA PANEL (Görseldeki Kompakt Glass Tasarımı)
+-- ANA PANEL (Görseldeki Glass UI Tasarımı)
 local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.fromOffset(450, 360)
+Main.Size = UDim2.fromOffset(450, 380)
 Main.Position = UDim2.fromScale(0.5, 0.5)
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
 Main.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 Main.BackgroundTransparency = 0.2
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
-local Stroke = Instance.new("UIStroke", Main)
-Stroke.Color = Color3.fromRGB(85, 95, 210)
-Stroke.Thickness = 2
+Instance.new("UIStroke", Main).Color = Color3.fromRGB(85, 95, 210)
 
 local Content = Instance.new("ScrollingFrame", Main)
-Content.Size = UDim2.new(1, -30, 1, -80)
+Content.Size = UDim2.new(1, -30, 1, -100)
 Content.Position = UDim2.new(0, 15, 0, 15)
 Content.BackgroundTransparency = 1
 Content.CanvasSize = UDim2.new(0, 0, 2, 0)
@@ -36,8 +32,8 @@ Content.ScrollBarThickness = 0
 local Layout = Instance.new("UIListLayout", Content)
 Layout.Padding = UDim.new(0, 8)
 
--- INPUT SİSTEMİ OLUŞTURUCU (RGB Destekli)
-local function CreateInp(title, place)
+-- INPUT OLUŞTURUCU
+local function CreateInp(place)
     local f = Instance.new("Frame", Content)
     f.Size = UDim2.new(1, 0, 0, 40)
     f.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
@@ -46,84 +42,46 @@ local function CreateInp(title, place)
 
     local box = Instance.new("TextBox", f)
     box.Size = UDim2.fromScale(0.4, 0.7)
-    box.Position = UDim2.fromScale(0.32, 0.15)
+    box.Position = UDim2.fromScale(0.3, 0.15)
     box.PlaceholderText = place
-    box.Text = ""
     box.TextColor3 = Color3.new(1, 1, 1)
     box.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-    box.Font = Enum.Font.Gotham
-    box.TextSize = 11
     Instance.new("UICorner", box)
 
     local rgb = Instance.new("TextBox", f)
-    rgb.Size = UDim2.fromScale(0.23, 0.7)
-    rgb.Position = UDim2.fromScale(0.74, 0.15)
+    rgb.Size = UDim2.fromScale(0.25, 0.7)
+    rgb.Position = UDim2.fromScale(0.72, 0.15)
     rgb.Text = "255,255,255"
     rgb.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     rgb.TextColor3 = Color3.new(1, 1, 1)
-    rgb.Font = Enum.Font.Code
-    rgb.TextSize = 10
     Instance.new("UICorner", rgb)
-    
     return box, rgb
 end
 
-local I_Name, C_Name = CreateInp("İSİM GÜNCELLE", "Metin...")
-local I_Rank, C_Rank = CreateInp("RÜTBE GÜNCELLE", "Kral...")
+local I_Name, C_Name = CreateInp("İsim Değiştir...")
+local I_Rank, C_Rank = CreateInp("Rütbe Değiştir...")
 
--- TAKIM SEÇİMİ (AAT'deki Takımları Algılar)
+-- OIO ÖZEL TAKIM SEÇİCİ
 local SelTeam, SelCol = "", nil
 local DropBtn = Instance.new("TextButton", Content)
 DropBtn.Size = UDim2.new(1, 0, 0, 40)
-DropBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-DropBtn.Text = "  TAKIM SEÇİN (AAT) ▼"
+DropBtn.Text = "TAKIM SEÇİN (OIO/AAT)"
+DropBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
 DropBtn.TextColor3 = Color3.fromRGB(120, 170, 255)
-DropBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", DropBtn)
 
-local TeamScroll = Instance.new("ScrollingFrame", Content)
-TeamScroll.Size = UDim2.new(1, 0, 0, 0)
-TeamScroll.Visible = false
-TeamScroll.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-Instance.new("UIListLayout", TeamScroll)
-
-DropBtn.MouseButton1Click:Connect(function()
-    TeamScroll.Visible = not TeamScroll.Visible
-    TeamScroll.Size = TeamScroll.Visible and UDim2.new(1, 0, 0, 100) or UDim2.new(1, 0, 0, 0)
-end)
-
-for _, t in pairs(Teams:GetTeams()) do
-    local b = Instance.new("TextButton", TeamScroll)
-    b.Size = UDim2.new(1, 0, 0, 30)
-    b.Text = "  " .. t.Name
-    b.TextColor3 = t.TeamColor.Color
-    b.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 10
-    b.TextXAlignment = Enum.TextXAlignment.Left
-    Instance.new("UICorner", b)
-    b.MouseButton1Click:Connect(function()
-        SelTeam, SelCol = t.Name, t.TeamColor.Color
-        DropBtn.Text = "SEÇİLDİ: " .. t.Name
-        TeamScroll.Visible = false
-        TeamScroll.Size = UDim2.new(1, 0, 0, 0)
-    end)
-end
-
--- UNIVERSAL GÜNCELLEME VE STEALTH MANTIĞI
+-- GÜNCELLE BUTONU (OIO DEEP FIX)
 local Apply = Instance.new("TextButton", Main)
 Apply.Size = UDim2.new(1, -30, 0, 50)
 Apply.Position = UDim2.new(0.5, 0, 1, -35)
 Apply.AnchorPoint = Vector2.new(0.5, 0.5)
 Apply.BackgroundColor3 = Color3.fromRGB(85, 95, 210)
-Apply.Text = "NAMETAGLARI ZORLA GÜNCELLE"
-Apply.Font = Enum.Font.GothamBlack
+Apply.Text = "OIO NAMETAGLARINI ZORLA KIR"
 Apply.TextColor3 = Color3.new(1, 1, 1)
-Apply.TextSize = 14
 Instance.new("UICorner", Apply)
 
 Apply.MouseButton1Click:Connect(function()
-    local char = Player.Character or Player.CharacterAdded:Wait()
+    local char = Player.Character
     if not char then return end
 
     local function GetRGB(txt)
@@ -133,52 +91,39 @@ Apply.MouseButton1Click:Connect(function()
 
     local nC, rC = GetRGB(C_Name.Text), GetRGB(C_Rank.Text)
 
-    -- Stealth Mode: Tek seferlik derin tarama, sürekli kontrol yok
-    task.spawn(function()
-        for _, tag in pairs(char:GetDescendants()) do
-            if tag:IsA("BillboardGui") then
-                local labels = {}
-                for _, v in pairs(tag:GetDescendants()) do
-                    if v:IsA("TextLabel") and v.Visible then table.insert(labels, v) end
-                end
-                
-                -- Konum bazlı sıralama (Üstten alta)
-                table.sort(labels, function(a, b) return a.AbsolutePosition.Y < b.AbsolutePosition.Y end)
+    -- OIO İÇİN DERİN TARAMA (DEEP SCAN)
+    for _, obj in pairs(char:GetDescendants()) do
+        if obj:IsA("BillboardGui") or obj:IsA("SurfaceGui") then
+            local labels = {}
+            for _, v in pairs(obj:GetDescendants()) do
+                if v:IsA("TextLabel") and v.Visible then table.insert(labels, v) end
+            end
+            
+            -- OIO'da katmanlar farklı olabilir, konuma göre sıralıyoruz
+            table.sort(labels, function(a, b) return a.AbsolutePosition.Y < b.AbsolutePosition.Y end)
 
-                -- 1. İSİM (AAT'deki 'sa' yazısı gibi)
-                if #labels >= 1 and I_Name.Text ~= "" then
-                    labels[1].Text = I_Name.Text
-                    labels[1].TextColor3 = nC
-                    labels[1]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[1].TextColor3 = nC end) -- Renk kilidi
-                end
-                -- 2. RÜTBE (AAT'deki 'sa' veya Acemi Er yazısı)
-                if #labels >= 2 and I_Rank.Text ~= "" then
-                    labels[2].Text = I_Rank.Text
-                    labels[2].TextColor3 = rC
-                    labels[2]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[2].TextColor3 = rC end) -- Renk kilidi
-                end
-                -- 3. TAKIM (AAT'deki 'Sivil' veya 'OSMANLI ORDUSU' yazısı)
-                if #labels >= 3 and SelTeam ~= "" then
-                    labels[#labels].Text = SelTeam
-                    labels[#labels].TextColor3 = SelCol
-                    labels[#labels]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[#labels].TextColor3 = SelCol end) -- Takım Renk Kilidi
-                end
+            if #labels >= 1 and I_Name.Text ~= "" then
+                labels[1].Text = I_Name.Text
+                labels[1].TextColor3 = nC
+            end
+            if #labels >= 2 and I_Rank.Text ~= "" then
+                labels[2].Text = I_Rank.Text
+                labels[2].TextColor3 = rC
+            end
+            -- En alttaki her zaman takımdır (OIO Takım Fix)
+            if #labels >= 3 and SelTeam ~= "" then
+                labels[#labels].Text = SelTeam
+                labels[#labels].TextColor3 = SelCol
             end
         end
-    end)
+    end
 end)
 
--- MOBİL RE BUTONU (Görünürlük Kontrolü)
+-- MOBİL RE BUTONU
 local Mob = Instance.new("TextButton", ScreenGui)
 Mob.Size = UDim2.fromOffset(50, 50)
 Mob.Position = UDim2.new(1, -60, 0.5, -25)
-Mob.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 Mob.Text = "RE"
-Mob.TextColor3 = Color3.fromRGB(120, 170, 255)
-Mob.Font = Enum.Font.GothamBlack
 Mob.Draggable = true
 Instance.new("UICorner", Mob).CornerRadius = UDim.new(1, 0)
-local MobStroke = Instance.new("UIStroke", Mob)
-MobStroke.Color = Color3.fromRGB(100, 150, 255)
-
 Mob.MouseButton1Click:Connect(function() Main.Visible = not Main.Visible end)
