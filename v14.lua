@@ -1,215 +1,202 @@
--- [[ TA 1.0 - ULTRA-FUNCTIONAL GLASS EDITION ]] --
--- Style: Ultra Glassmorphism
--- Target Launch: 03.03.2026
--- Fixes: Name/Rank/Color/Dropdown Functions
+-- [[ TA 1.0 - COMPACT GLASS EDITION ]] --
+-- Style: Centered Compact Glass
+-- Fixes: Force Color Sync, Dropdown System, Centered UI
 
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 local Teams = game:GetService("Teams")
 local Lighting = game:GetService("Lighting")
 
 local Player = Players.LocalPlayer
 
--- ESKİ PANELİ TEMİZLE
-if Player.PlayerGui:FindFirstChild("REDIX_GLASS_FINAL") then Player.PlayerGui:FindFirstChild("REDIX_GLASS_FINAL"):Destroy() end
+-- TEMİZLİK
+if Player.PlayerGui:FindFirstChild("REDIX_FINAL_COMPACT") then Player.PlayerGui.REDIX_FINAL_COMPACT:Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", Player.PlayerGui)
-ScreenGui.Name = "REDIX_GLASS_FINAL"
-ScreenGui.IgnoreGuiInset = true -- Mobil uyum
+ScreenGui.Name = "REDIX_FINAL_COMPACT"
 ScreenGui.ResetOnSpawn = false
 
--- ARKA PLAN BLUR (O premium "Glass" hissi için)
-local BlurEffect = Lighting:FindFirstChild("RedixGlassBlur") or Instance.new("BlurEffect", Lighting)
-BlurEffect.Name = "RedixGlassBlur"
-BlurEffect.Size = 25
-BlurEffect.Enabled = false -- Panel açıkken aktif olur
+-- ARKA PLAN BLUR
+local Blur = Lighting:FindFirstChild("CompactBlur") or Instance.new("BlurEffect", Lighting)
+Blur.Name = "CompactBlur"
+Blur.Size = 20
+Blur.Enabled = false
 
--- ANA PANEL (Glassmorphism Tasarımı)
+-- ANA PANEL (Küçültüldü ve Ortalandı)
 local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.fromOffset(580, 430) -- Takım Dropdown için yer açıldı
+Main.Size = UDim2.fromOffset(450, 350) -- Daha küçük boyut
 Main.Position = UDim2.fromScale(0.5, 0.5)
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
-Main.BackgroundColor3 = Color3.fromRGB(30, 30, 40) -- Koyu cam tonu
-Main.BackgroundTransparency = 0.15 -- Şeffaflık
+Main.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+Main.BackgroundTransparency = 0.2 -- Cam efekti
 Main.BorderSizePixel = 0
 Main.Active = true
-Main.Draggable = true -- PC için sürüklenebilir
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
-Instance.new("UIStroke", Main).Color = Color3.fromRGB(100, 150, 255) -- Mavi neon kenar
+Main.Draggable = true
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 12)
+local Stroke = Instance.new("UIStroke", Main)
+Stroke.Color = Color3.fromRGB(100, 150, 255)
+Stroke.Thickness = 1.5
 
--- SCROLLING AREA (Ayarlar)
+-- İÇERİK ALANI
 local Content = Instance.new("ScrollingFrame", Main)
-Content.Size = UDim2.new(1, -100, 1, -90)
-Content.Position = UDim2.new(0, 90, 0, 20)
+Content.Size = UDim2.new(1, -30, 1, -80)
+Content.Position = UDim2.new(0, 15, 0, 15)
 Content.BackgroundTransparency = 1
-Content.CanvasSize = UDim2.new(0, 0, 2, 0)
-Content.ScrollBarThickness = 2
+Content.CanvasSize = UDim2.new(0, 0, 1.8, 0)
+Content.ScrollBarThickness = 0
 local Layout = Instance.new("UIListLayout", Content)
-Layout.Padding = UDim.new(0, 10)
+Layout.Padding = UDim.new(0, 8)
 
--- ÖZEL INPUT OLUŞTURUCU (RGB Destekli)
-local function CreateEliteInput(title, place)
+-- INPUT OLUŞTURUCU
+local function CreateInp(title, place)
     local f = Instance.new("Frame", Content)
-    f.Size = UDim2.new(1, 0, 0, 45)
-    f.BackgroundColor3 = Color3.fromRGB(20, 20, 30) -- Cam içi koyuluk
-    f.BackgroundTransparency = 0.5 -- Hafif şeffaf
-    f.BorderSizePixel = 0
+    f.Size = UDim2.new(1, 0, 0, 40)
+    f.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    f.BackgroundTransparency = 0.4
     Instance.new("UICorner", f)
 
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.fromScale(0.3, 1)
     l.Position = UDim2.fromOffset(10, 0)
     l.Text = title
-    l.TextColor3 = Color3.new(0.8, 0.8, 0.8) -- Soluk gri metin
+    l.TextColor3 = Color3.fromRGB(200, 200, 200)
     l.Font = Enum.Font.GothamBold
-    l.TextSize = 11
+    l.TextSize = 10
     l.BackgroundTransparency = 1
 
-    local txt = Instance.new("TextBox", f)
-    txt.Size = UDim2.fromScale(0.4, 0.7)
-    txt.Position = UDim2.fromScale(0.32, 0.15)
-    txt.BackgroundColor3 = Color3.fromRGB(15, 15, 25) -- Koyu kutu
-    txt.PlaceholderText = place
-    txt.Text = ""
-    txt.TextColor3 = Color3.new(1, 1, 1) -- Beyaz metin
-    txt.Font = Enum.Font.Gotham
-    txt.TextSize = 12
-    Instance.new("UICorner", txt)
+    local box = Instance.new("TextBox", f)
+    box.Size = UDim2.fromScale(0.4, 0.7)
+    box.Position = UDim2.fromScale(0.32, 0.15)
+    box.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+    box.PlaceholderText = place
+    box.Text = ""
+    box.TextColor3 = Color3.new(1, 1, 1)
+    box.Font = Enum.Font.Gotham
+    box.TextSize = 11
+    Instance.new("UICorner", box)
 
     local rgb = Instance.new("TextBox", f)
     rgb.Size = UDim2.fromScale(0.23, 0.7)
     rgb.Position = UDim2.fromScale(0.74, 0.15)
-    rgb.BackgroundColor3 = Color3.fromRGB(25, 25, 35) -- Koyu kutu
-    rgb.Text = "255,255,255" -- Varsayılan Beyaz
+    rgb.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    rgb.Text = "255,255,255"
     rgb.TextColor3 = Color3.new(1, 1, 1)
     rgb.Font = Enum.Font.Code
-    rgb.TextSize = 10
+    rgb.TextSize = 9
     Instance.new("UICorner", rgb)
     
-    return txt, rgb
+    return box, rgb
 end
 
-local I_Name, C_Name = CreateEliteInput("İSİM DEĞİŞTİR", "Metin...")
-local I_Rank, C_Rank = CreateEliteInput("RÜTBE DEĞİŞTİR", "Kral...")
+local I_Name, C_Name = CreateInp("İSİM", "Metin...")
+local I_Rank, C_Rank = CreateInp("RÜTBE", "Kral...")
 
--- TAKIM DROPDOWN MENÜSÜ (Tıkla-Aç Scrolling)
-local TeamTitleFrame = Instance.new("Frame", Content)
-TeamTitleFrame.Size = UDim2.new(1, 0, 0, 45)
-TeamTitleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30) -- Cam içi koyuluk
-TeamTitleFrame.BackgroundTransparency = 0.5 -- Hafif şeffaf
-Instance.new("UICorner", TeamTitleFrame)
+-- DROPDOWN TAKIM SEÇME
+local DropFrame = Instance.new("Frame", Content)
+DropFrame.Size = UDim2.new(1, 0, 0, 40)
+DropFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+DropFrame.BackgroundTransparency = 0.4
+Instance.new("UICorner", DropFrame)
 
-local TeamTitleBtn = Instance.new("TextButton", TeamTitleFrame)
-TeamTitleBtn.Size = UDim2.fromScale(1, 1)
-TeamTitleBtn.BackgroundTransparency = 1
-TeamTitleBtn.Text = "  TAKIM SEÇİM MENÜSÜ ▼" -- Referans görseldeki gibi
-TeamTitleBtn.TextColor3 = Color3.fromRGB(120, 170, 255) -- Mavi metin
-TeamTitleBtn.Font = Enum.Font.GothamBold
-TeamTitleBtn.TextXAlignment = Enum.TextXAlignment.Left
+local DropBtn = Instance.new("TextButton", DropFrame)
+DropBtn.Size = UDim2.fromScale(1, 1)
+DropBtn.BackgroundTransparency = 1
+DropBtn.Text = "  TAKIM SEÇİMİ ▼"
+DropBtn.TextColor3 = Color3.fromRGB(120, 170, 255)
+DropBtn.Font = Enum.Font.GothamBold
+DropBtn.TextSize = 11
+DropBtn.TextXAlignment = Enum.TextXAlignment.Left
 
-local TeamListScroll = Instance.new("ScrollingFrame", Content)
-TeamListScroll.Size = UDim2.new(1, 0, 0, 0) -- Başta kapalı
-TeamListScroll.BackgroundColor3 = Color3.fromRGB(15, 15, 25) -- Koyu liste
-TeamListScroll.BackgroundTransparency = 0.2 -- Hafif şeffaf
-TeamListScroll.CanvasSize = UDim2.new(0, 0, 2, 0)
-TeamListScroll.ScrollBarThickness = 2
-TeamListScroll.Visible = false
-local TeamListLayout = Instance.new("UIListLayout", TeamListScroll)
+local TeamScroll = Instance.new("ScrollingFrame", Content)
+TeamScroll.Size = UDim2.new(1, 0, 0, 0)
+TeamScroll.Visible = false
+TeamScroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+TeamScroll.BorderSizePixel = 0
+TeamScroll.CanvasSize = UDim2.new(0, 0, 2, 0)
+Instance.new("UIListLayout", TeamScroll)
 
-local SelectedTeam, SelectedTeamColor = "", Color3.new(1, 1, 1)
+local SelTeam, SelCol = "", nil
 
--- DROPDOWN AÇ/KAPAT MANTIĞI
-TeamTitleBtn.MouseButton1Click:Connect(function()
-    TeamListScroll.Visible = not TeamListScroll.Visible
-    TeamListScroll.Size = TeamListScroll.Visible and UDim2.new(1, 0, 0, 120) or UDim2.new(1, 0, 0, 0)
-    Content.CanvasSize = UDim2.new(0, 0, TeamListScroll.Visible and 2.5 or 2, 0) -- Canvası ayarla
+DropBtn.MouseButton1Click:Connect(function()
+    TeamScroll.Visible = not TeamScroll.Visible
+    TeamScroll.Size = TeamScroll.Visible and UDim2.new(1, 0, 0, 100) or UDim2.new(1, 0, 0, 0)
 end)
 
 for _, t in pairs(Teams:GetTeams()) do
-    local b = Instance.new("TextButton", TeamListScroll)
-    b.Size = UDim2.new(1, 0, 0, 30)
-    b.BackgroundColor3 = Color3.fromRGB(25, 25, 35) -- Koyu buton
+    local b = Instance.new("TextButton", TeamScroll)
+    b.Size = UDim2.new(1, 0, 0, 25)
+    b.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     b.Text = "  " .. t.Name
     b.TextColor3 = t.TeamColor.Color
     b.Font = Enum.Font.GothamBold
+    b.TextSize = 10
     b.TextXAlignment = Enum.TextXAlignment.Left
     Instance.new("UICorner", b)
     b.MouseButton1Click:Connect(function()
-        SelectedTeam = t.Name
-        SelectedTeamColor = t.TeamColor.Color -- Takımın rengi
-        TeamTitleBtn.Text = "  SEÇİLDİ: " .. t.Name:upper()
-        TeamListScroll.Visible = false
-        TeamListScroll.Size = UDim2.new(1, 0, 0, 0)
-        Content.CanvasSize = UDim2.new(0, 0, 2, 0)
+        SelTeam, SelCol = t.Name, t.TeamColor.Color
+        DropBtn.Text = "  SEÇİLDİ: " .. t.Name:upper()
+        TeamScroll.Visible = false
+        TeamScroll.Size = UDim2.new(1, 0, 0, 0)
     end)
 end
 
--- GÜNCELLE BUTONU (Lilly's Obby Referansı)
+-- UYGULA BUTONU
 local Apply = Instance.new("TextButton", Main)
-Apply.Size = UDim2.new(1, -110, 0, 50)
-Apply.Position = UDim2.new(0, 95, 1, -65)
-Apply.BackgroundColor3 = Color3.fromRGB(85, 95, 210) -- Premium mavi buton
-Apply.Text = "AYARLARI KAYDET VE UYGULA"
+Apply.Size = UDim2.new(1, -30, 0, 45)
+Apply.Position = UDim2.new(0.5, 0, 1, -35)
+Apply.AnchorPoint = Vector2.new(0.5, 0.5)
+Apply.BackgroundColor3 = Color3.fromRGB(85, 95, 210)
+Apply.Text = "DEĞİŞİKLİKLERİ KAYDET"
 Apply.Font = Enum.Font.GothamBlack
-Apply.TextColor3 = Color3.new(1, 1, 1) -- Beyaz metin
-Apply.TextSize = 14
+Apply.TextColor3 = Color3.new(1, 1, 1)
+Apply.TextSize = 13
 Instance.new("UICorner", Apply)
 
--- ANA İŞLEM (Hatalar düzeltildi)
+-- RENK VE İSİM FİKSLEME
 Apply.MouseButton1Click:Connect(function()
-    local char = Player.Character or Player.CharacterAdded:Wait()
-    local function GetColor(box)
-        local r, g, b = box.Text:match("(%d+),(%d+),(%d+)")
+    local char = Player.Character
+    if not char then return end
+
+    local function GetRGB(txt)
+        local r, g, b = txt:match("(%d+),(%d+),(%d+)")
         return (r and g and b) and Color3.fromRGB(r,g,b) or Color3.new(1,1,1)
     end
 
-    -- BillboardGui taraması (Nametagler buradadır)
-    for _, tag in pairs(char:GetDescendants()) do
-        if tag:IsA("BillboardGui") then
-            for _, v in pairs(tag:GetDescendants()) do
-                if v:IsA("TextLabel") then
-                    local t = v.Text:lower()
-                    -- İSİM (Senin RGB Rengin)
-                    if I_Name.Text ~= "" and (t:find(Player.Name:lower()) or v.Name:lower():find("name") or v.Name:lower():find("isim")) then
-                        v.Text = I_Name.Text
-                        v.TextColor3 = GetColor(C_Name) -- RGB kutusundan renk al
-                    -- RÜTBE (Senin RGB Rengin)
-                    elseif I_Rank.Text ~= "" and (v.Name:lower():find("rank") or t:find("guest") or v.Name:lower():find("rütbe")) then
-                        v.Text = I_Rank.Text
-                        v.TextColor3 = GetColor(C_Rank) -- RGB kutusundan renk al
-                    -- TAKIM VE TAKIM RENK FİKS (Kesin Çözüm)
-                    elseif SelectedTeam ~= "" and (v.Name:lower():find("team") or t:find("takım")) then
-                        v.Text = SelectedTeam
-                        v.TextColor3 = SelectedTeamColor -- Takımın kendi rengini bas
-                    end
-                end
+    local nC, rC = GetRGB(C_Name.Text), GetRGB(C_Rank.Text)
+
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("TextLabel") then
+            local low = v.Text:lower()
+            if I_Name.Text ~= "" and (low:find(Player.Name:lower()) or v.Name:lower():find("name")) then
+                v.Text = I_Name.Text
+                v.TextColor3 = nC
+                v:GetPropertyChangedSignal("TextColor3"):Connect(function() v.TextColor3 = nC end)
+            elseif I_Rank.Text ~= "" and (v.Name:lower():find("rank") or low:find("guest") or v.Name:lower():find("rütbe")) then
+                v.Text = I_Rank.Text
+                v.TextColor3 = rC
+                v:GetPropertyChangedSignal("TextColor3"):Connect(function() v.TextColor3 = rC end)
+            elseif SelTeam ~= "" and (v.Name:lower():find("team") or low:find("takım")) then
+                v.Text = SelTeam
+                v.TextColor3 = SelCol
+                v:GetPropertyChangedSignal("TextColor3"):Connect(function() v.TextColor3 = SelCol end)
             end
         end
     end
 end)
 
--- MOBİL AÇ/KAPAT (Advanced Draggable "RE" Button)
+-- MOBİL RE BUTONU
 local Mob = Instance.new("TextButton", ScreenGui)
-Mob.Size = UDim2.fromOffset(55, 55)
-Mob.Position = UDim2.new(1, -70, 0.5, -27)
-Mob.BackgroundColor3 = Color3.fromRGB(30, 30, 40) -- Koyu cam tonu
+Mob.Size = UDim2.fromOffset(50, 50)
+Mob.Position = UDim2.new(1, -65, 0.5, -25)
+Mob.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 Mob.Text = "RE"
-Mob.TextColor3 = Color3.fromRGB(120, 170, 255) -- Mavi metin
+Mob.TextColor3 = Color3.fromRGB(120, 170, 255)
 Mob.Font = Enum.Font.GothamBlack
-Mob.TextSize = 18
-Mob.Draggable = true -- Harekete ettirebilirsin
-Instance.new("UICorner", Mob).CornerRadius = UDim.new(1, 0) -- Yuvarlak
-local MobStroke = Instance.new("UIStroke", Mob)
-MobStroke.Color = Color3.fromRGB(100, 150, 255) -- Mavi neon kenar
-MobStroke.Thickness = 1.5
+Mob.Draggable = true
+Instance.new("UICorner", Mob).CornerRadius = UDim.new(1, 0)
+Instance.new("UIStroke", Mob).Color = Color3.fromRGB(100, 150, 255)
 
--- PANEL AÇ/KAPAT & BLUR KONTROLÜ
-local function ToggleHub()
+Mob.MouseButton1Click:Connect(function()
     Main.Visible = not Main.Visible
-    BlurEffect.Enabled = Main.Visible -- Panel açıkken blur aktif
-end
-
-Mob.MouseButton1Click:Connect(ToggleHub)
-UserInputService.InputBegan:Connect(function(i, p) if not p and i.KeyCode == Enum.KeyCode.K then ToggleHub() end end)
+    Blur.Enabled = Main.Visible
+end)
