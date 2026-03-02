@@ -1,166 +1,131 @@
--- [[ TA 1.0 - ELITE VISUAL EDITION ]] --
+-- [[ TA 1.0 - VOID STYLE PREMIUM ]] --
+-- UI Style: VOIDLUA HUB (Inspired by Image)
 -- Created by: Rendix Studio
--- Style: Vanguard & Wave Premium UI
 
 local Player = game.Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
-local UserInputService = game:GetService("UserInputService")
 local Teams = game:GetService("Teams")
 local TweenService = game:GetService("TweenService")
 
--- ESKİ PANELİ SİL
-if CoreGui:FindFirstChild("TA_Elite_UI") then CoreGui:FindFirstChild("TA_Elite_UI"):Destroy() end
+if CoreGui:FindFirstChild("VOID_TA_UI") then CoreGui:FindFirstChild("VOID_TA_UI"):Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", CoreGui)
-ScreenGui.Name = "TA_Elite_UI"
-ScreenGui.ResetOnSpawn = false
+ScreenGui.Name = "VOID_TA_UI"
 
--- ANA PANEL (Premium Dark Glass)
+-- ANA PANEL (Görseldeki gibi yuvarlatılmış ve koyu)
 local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.new(0, 440, 0, 540)
-Main.Position = UDim2.new(0.5, -220, 0.5, -270)
-Main.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+Main.Size = UDim2.new(0, 550, 0, 320)
+Main.Position = UDim2.new(0.5, -275, 0.5, -160)
+Main.BackgroundColor3 = Color3.fromRGB(18, 18, 25)
 Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 
--- NEON KENAR ÇİZGİSİ (Glow)
-local Stroke = Instance.new("UIStroke", Main)
-Stroke.Color = Color3.fromRGB(0, 120, 255)
-Stroke.Thickness = 2.5
-Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+-- SOL MENÜ (Sidebar)
+local Sidebar = Instance.new("Frame", Main)
+Sidebar.Size = UDim2.new(0, 70, 1, 0)
+Sidebar.BackgroundColor3 = Color3.fromRGB(14, 14, 20)
+Sidebar.BorderSizePixel = 0
+Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 10)
 
--- ARKA PLAN GRADIENT (Üstten alta hafif renk geçişi)
-local Gradient = Instance.new("UIGradient", Main)
-Gradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(15, 15, 20)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 5))
-})
-
--- BAŞLIK ALANI
-local Header = Instance.new("Frame", Main)
-Header.Size = UDim2.new(1, 0, 0, 50)
-Header.BackgroundTransparency = 1
-local Title = Instance.new("TextLabel", Header)
-Title.Size = UDim2.new(1, -20, 1, 0)
-Title.Position = UDim2.new(0, 15, 0, 0)
-Title.Text = "RENDIX STUDIO | TA 1.0"
-Title.TextColor3 = Color3.fromRGB(0, 120, 255)
-Title.Font = Enum.Font.GothamBlack
-Title.TextSize = 18
+-- LOGO / BAŞLIK
+local Title = Instance.new("TextLabel", Main)
+Title.Size = UDim2.new(0, 200, 0, 40)
+Title.Position = UDim2.new(0, 85, 0, 10)
+Title.Text = "TA 1.0 HUB"
+Title.TextColor3 = Color3.new(1,1,1)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- INPUT SİSTEMİ (Premium Tasarım)
-local function CreateEliteInput(ph, y, isColor)
-    local box = Instance.new("TextBox", Main)
-    box.Size = isColor and UDim2.new(0, 110, 0, 45) or UDim2.new(0, 230, 0, 45)
-    box.Position = isColor and UDim2.new(0, 280, 0, y) or UDim2.new(0, 30, 0, y)
-    box.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
-    box.PlaceholderText = ph
-    box.Text = isColor and "255,255,255" or ""
-    box.TextColor3 = Color3.new(1,1,1)
-    box.Font = Enum.Font.GothamBold
-    box.PlaceholderColor3 = Color3.fromRGB(100, 100, 110)
-    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
+-- İÇERİK ALANI (Scrolling)
+local Container = Instance.new("ScrollingFrame", Main)
+Container.Size = UDim2.new(1, -90, 1, -60)
+Container.Position = UDim2.new(0, 80, 0, 50)
+Container.BackgroundTransparency = 1
+Container.ScrollBarThickness = 2
+Container.CanvasSize = UDim2.new(0, 0, 1.5, 0)
+local Layout = Instance.new("UIListLayout", Container)
+Layout.Padding = UDim.new(0, 8)
+
+-- ÖZEL SATIR OLUŞTURUCU (VOID Style)
+local function CreateVoidRow(text, ph)
+    local frame = Instance.new("Frame", Container)
+    frame.Size = UDim2.new(1, -10, 0, 45)
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    Instance.new("UICorner", frame)
     
-    local s = Instance.new("UIStroke", box)
-    s.Color = Color3.fromRGB(40, 40, 45)
-    s.Thickness = 1.2
+    local lab = Instance.new("TextLabel", frame)
+    lab.Size = UDim2.new(0.4, 0, 1, 0)
+    lab.Position = UDim2.new(0, 10, 0, 0)
+    lab.Text = text
+    lab.TextColor3 = Color3.fromRGB(200, 200, 200)
+    lab.Font = Enum.Font.Gotham
+    lab.TextSize = 13
+    lab.BackgroundTransparency = 1
+    lab.TextXAlignment = Enum.TextXAlignment.Left
+
+    local inp = Instance.new("TextBox", frame)
+    inp.Size = UDim2.new(0.5, 0, 0.7, 0)
+    inp.Position = UDim2.new(0.45, 0, 0.15, 0)
+    inp.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    inp.PlaceholderText = ph
+    inp.Text = ""
+    inp.TextColor3 = Color3.new(1,1,1)
+    Instance.new("UICorner", inp)
     
-    box.Focused:Connect(function() s.Color = Color3.fromRGB(0, 120, 255) end)
-    box.FocusLost:Connect(function() s.Color = Color3.fromRGB(40, 40, 45) end)
-    
-    return box
+    return inp
 end
 
-local I_Name = CreateEliteInput("Yeni İsim Gir...", 70, false)
-local C_Name = CreateEliteInput("R,G,B", 70, true)
-local I_Rank = CreateEliteInput("Yeni Rütbe Gir...", 125, false)
-local C_Rank = CreateEliteInput("R,G,B", 125, true)
+local I_Name = CreateVoidRow("İsim Değiştir", "Yeni İsim...")
+local C_Name = CreateVoidRow("İsim Rengi", "255,255,255")
+local I_Rank = CreateVoidRow("Rütbe Değiştir", "Yeni Rütbe...")
+local C_Rank = CreateVoidRow("Rütbe Rengi", "255,255,255")
 
--- TAKIM LİSTESİ BAŞLIĞI
-local TeamLabel = Instance.new("TextLabel", Main)
-TeamLabel.Size = UDim2.new(0, 200, 0, 20)
-TeamLabel.Position = UDim2.new(0, 30, 0, 185)
-TeamLabel.BackgroundTransparency = 1
-TeamLabel.Text = "LİSTEDEN TAKIM SEÇ"
-TeamLabel.TextColor3 = Color3.fromRGB(150, 150, 160)
-TeamLabel.Font = Enum.Font.GothamBold
-TeamLabel.TextSize = 12
-TeamLabel.TextXAlignment = Enum.TextXAlignment.Left
+-- TAKIM LİSTESİ (Butonlar)
+local TeamFrame = Instance.new("Frame", Container)
+TeamFrame.Size = UDim2.new(1, -10, 0, 120)
+TeamFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+Instance.new("UICorner", TeamFrame)
 
--- SCROLLING LIST (Vanguard Style)
-local Scroll = Instance.new("ScrollingFrame", Main)
-Scroll.Size = UDim2.new(0, 380, 0, 180)
-Scroll.Position = UDim2.new(0, 30, 0, 210)
-Scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-Scroll.ScrollBarThickness = 3
-Scroll.ScrollBarImageColor3 = Color3.fromRGB(0, 120, 255)
-Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-Instance.new("UICorner", Scroll)
-local Layout = Instance.new("UIListLayout", Scroll)
-Layout.Padding = UDim.new(0, 6)
-Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+local TeamScroll = Instance.new("ScrollingFrame", TeamFrame)
+TeamScroll.Size = UDim2.new(1, -10, 1, -10)
+TeamScroll.Position = UDim2.new(0, 5, 0, 5)
+TeamScroll.BackgroundTransparency = 1
+TeamScroll.ScrollBarThickness = 2
+Instance.new("UIListLayout", TeamScroll).Padding = UDim.new(0, 5)
 
-local SelectedTeam = ""
-local SelectedColor = Color3.new(1,1,1)
+local SelectedTeam, SelectedColor = "", Color3.new(1,1,1)
 
-local function RefreshTeams()
-    for _, v in pairs(Scroll:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
-    for _, t in pairs(Teams:GetTeams()) do
-        local btn = Instance.new("TextButton", Scroll)
-        btn.Size = UDim2.new(0.95, 0, 0, 40)
-        btn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-        btn.Text = "  " .. t.Name
-        btn.TextColor3 = Color3.fromRGB(200, 200, 200)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextXAlignment = Enum.TextXAlignment.Left
-        btn.AutoButtonColor = false
-        Instance.new("UICorner", btn)
-        
-        local bStroke = Instance.new("UIStroke", btn)
-        bStroke.Color = t.TeamColor.Color
-        bStroke.Thickness = 1.5
-        bStroke.Transparency = 0.5
-
-        btn.MouseButton1Click:Connect(function()
-            SelectedTeam = t.Name
-            SelectedColor = t.TeamColor.Color
-            Title.Text = "SEÇİLEN: " .. t.Name:upper()
-            Title.TextColor3 = t.TeamColor.Color
-            TweenService:Create(btn, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(40, 40, 50)}):Play()
-            task.wait(0.2)
-            TweenService:Create(btn, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(25, 25, 30)}):Play()
-        end)
-    end
-    Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
+for _, t in pairs(Teams:GetTeams()) do
+    local b = Instance.new("TextButton", TeamScroll)
+    b.Size = UDim2.new(1, 0, 0, 30)
+    b.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    b.Text = t.Name
+    b.TextColor3 = t.TeamColor.Color
+    Instance.new("UICorner", b)
+    b.MouseButton1Click:Connect(function()
+        SelectedTeam = t.Name
+        SelectedColor = t.TeamColor.Color
+        Title.Text = "SEÇİLDİ: " .. t.Name:upper()
+    end)
 end
-RefreshTeams()
 
--- ÜRET BUTONU (Zirve Efektli)
+-- ÜRET BUTONU (Görseldeki Mavi Buton Stili)
 local Apply = Instance.new("TextButton", Main)
-Apply.Size = UDim2.new(0, 380, 0, 55)
-Apply.Position = UDim2.new(0, 30, 0, 410)
-Apply.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-Apply.Text = "NAMETAGLARI SİSTEME BAS"
+Apply.Size = UDim2.new(0, 450, 0, 40)
+Apply.Position = UDim2.new(0, 80, 1, -50)
+Apply.BackgroundColor3 = Color3.fromRGB(80, 90, 180)
+Apply.Text = "SİSTEMİ GÜNCELLE"
 Apply.TextColor3 = Color3.new(1,1,1)
-Apply.Font = Enum.Font.GothamBlack
-Apply.TextSize = 16
+Apply.Font = Enum.Font.GothamBold
 Instance.new("UICorner", Apply)
 
-Apply.MouseEnter:Connect(function()
-    TweenService:Create(Apply, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 150, 255), Size = UDim2.new(0, 390, 0, 60), Position = UDim2.new(0, 25, 0, 407.5)}):Play()
-end)
-Apply.MouseLeave:Connect(function()
-    TweenService:Create(Apply, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 120, 255), Size = UDim2.new(0, 380, 0, 55), Position = UDim2.new(0, 30, 0, 410)}):Play()
-end)
-
--- ANA GÜNCELLEME DÖNGÜSÜ (Eski Sağlam Mantık)
+-- ANA MANTIK
 Apply.MouseButton1Click:Connect(function()
     local char = Player.Character
     if not char then return end
-
     local function GetRGB(box)
         local r, g, b = box.Text:match("(%d+),(%d+),(%d+)")
         return (r and g and b) and Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b)) or Color3.new(1,1,1)
@@ -181,23 +146,4 @@ Apply.MouseButton1Click:Connect(function()
             end
         end
     end
-end)
-
--- MOBİL BUTON (Elite Logo)
-local Mob = Instance.new("TextButton", ScreenGui)
-Mob.Size = UDim2.new(0, 55, 0, 55)
-Mob.Position = UDim2.new(1, -70, 0.5, -27)
-Mob.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-Mob.Text = "TA"
-Mob.TextColor3 = Color3.fromRGB(0, 120, 255)
-Mob.Font = Enum.Font.GothamBlack
-Instance.new("UICorner", Mob).CornerRadius = UDim.new(1,0)
-local mS = Instance.new("UIStroke", Mob)
-mS.Color = Color3.fromRGB(0, 120, 255)
-mS.Thickness = 2
-Mob.MouseButton1Click:Connect(function() Main.Visible = not Main.Visible end)
-
--- PC K KISAYOL
-UserInputService.InputBegan:Connect(function(i, p)
-    if not p and i.KeyCode == Enum.KeyCode.K then Main.Visible = not Main.Visible end
 end)
