@@ -1,17 +1,18 @@
--- [[ RENDIX STUDIO - UNIVERSAL TEAM & COLOR FORCE ]] --
--- GitHub: https://raw.githubusercontent.com/Erz4481/RedixumScripts/refs/heads/main/v14_fix.lua
--- Fix: Deep Scan for Sivil/İnzibat/Rank Labels
+-- [[ RENDIX STUDIO - STEALTH v15.0 ]] --
+-- Fix: Anti-Cheat (aat) Bypass
+-- Feature: One-time Stealth Injection
+-- Target: 03.03.2026 Launch
 
 local Players = game:GetService("Players")
 local Teams = game:GetService("Teams")
 local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 
--- UI TEMİZLİK
-if Player.PlayerGui:FindFirstChild("REDIX_V14_FIX") then Player.PlayerGui.REDIX_V14_FIX:Destroy() end
+-- ESKİ UI TEMİZLİK
+if Player.PlayerGui:FindFirstChild("REDIX_STEALTH_V15") then Player.PlayerGui.REDIX_STEALTH_V15:Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", Player.PlayerGui)
-ScreenGui.Name = "REDIX_V14_FIX"
+ScreenGui.Name = "REDIX_STEALTH_V15"
 ScreenGui.ResetOnSpawn = false
 
 -- ANA PANEL (Kompakt Glass Tasarımı)
@@ -35,7 +36,7 @@ Content.ScrollBarThickness = 0
 local Layout = Instance.new("UIListLayout", Content)
 Layout.Padding = UDim.new(0, 8)
 
--- INPUT SİSTEMİ
+-- INPUT OLUŞTURUCU
 local function CreateInp(title, place)
     local f = Instance.new("Frame", Content)
     f.Size = UDim2.new(1, 0, 0, 40)
@@ -102,13 +103,13 @@ for _, t in pairs(Teams:GetTeams()) do
     end)
 end
 
--- GÜNCELLEME VE FORCE MANTIĞI
+-- ANTI-AAT GÜNCELLEME MANTIĞI
 local Apply = Instance.new("TextButton", Main)
 Apply.Size = UDim2.new(1, -30, 0, 50)
 Apply.Position = UDim2.new(0.5, 0, 1, -35)
 Apply.AnchorPoint = Vector2.new(0.5, 0.5)
 Apply.BackgroundColor3 = Color3.fromRGB(85, 95, 210)
-Apply.Text = "NAMETAGLARI ZORLA GÜNCELLE"
+Apply.Text = "NAMETAGLARI SESSİZCE GÜNCELLE"
 Apply.Font = Enum.Font.GothamBlack
 Apply.TextColor3 = Color3.new(1, 1, 1)
 Instance.new("UICorner", Apply)
@@ -124,40 +125,36 @@ Apply.MouseButton1Click:Connect(function()
 
     local nC, rC = GetRGB(C_Name.Text), GetRGB(C_Rank.Text)
 
-    -- Nametag taraması ve konum bazlı tespit
-    for _, tag in pairs(char:GetDescendants()) do
-        if tag:IsA("BillboardGui") then
-            local labels = {}
-            for _, v in pairs(tag:GetDescendants()) do
-                if v:IsA("TextLabel") and v.Visible then table.insert(labels, v) end
-            end
-            
-            -- Ekrandaki yüksekliğe göre sırala (Üstten alta)
-            table.sort(labels, function(a, b) return a.AbsolutePosition.Y < b.AbsolutePosition.Y end)
+    -- AAT Bypass: Tek seferlik enjeksiyon, sürekli kontrol yok
+    task.spawn(function()
+        for _, tag in pairs(char:GetDescendants()) do
+            if tag:IsA("BillboardGui") then
+                local labels = {}
+                for _, v in pairs(tag:GetDescendants()) do
+                    if v:IsA("TextLabel") and v.Visible then table.insert(labels, v) end
+                end
+                
+                -- Yüksekliğe göre sırala
+                table.sort(labels, function(a, b) return a.AbsolutePosition.Y < b.AbsolutePosition.Y end)
 
-            -- İSİM (En Üstteki Yazı)
-            if #labels >= 1 and I_Name.Text ~= "" then
-                labels[1].Text = I_Name.Text
-                labels[1].TextColor3 = nC
-                labels[1]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[1].TextColor3 = nC end)
-            end
-            -- RÜTBE (Ortadaki Yazı)
-            if #labels >= 2 and I_Rank.Text ~= "" then
-                labels[2].Text = I_Rank.Text
-                labels[2].TextColor3 = rC
-                labels[2]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[2].TextColor3 = rC end)
-            end
-            -- TAKIM (En Alttaki Yazı - Sivil/İnzibat Fix)
-            if #labels >= 3 and SelTeam ~= "" then
-                labels[#labels].Text = SelTeam
-                labels[#labels].TextColor3 = SelCol
-                labels[#labels]:GetPropertyChangedSignal("TextColor3"):Connect(function() labels[#labels].TextColor3 = SelCol end)
+                if #labels >= 1 and I_Name.Text ~= "" then
+                    labels[1].Text = I_Name.Text
+                    labels[1].TextColor3 = nC
+                end
+                if #labels >= 2 and I_Rank.Text ~= "" then
+                    labels[2].Text = I_Rank.Text
+                    labels[2].TextColor3 = rC
+                end
+                if #labels >= 3 and SelTeam ~= "" then
+                    labels[#labels].Text = SelTeam
+                    labels[#labels].TextColor3 = SelCol
+                end
             end
         end
-    end
+    end)
 end)
 
--- MOBİL AÇ/KAPAT
+-- MOBİL RE BUTONU
 local Mob = Instance.new("TextButton", ScreenGui)
 Mob.Size = UDim2.fromOffset(50, 50)
 Mob.Position = UDim2.new(1, -60, 0.5, -25)
