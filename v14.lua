@@ -1,6 +1,6 @@
--- [[ REDIX ELITE v22 - KESİN RENK FİKS ]] --
--- Fix: Team Color Sync, TextColor3 Force
--- UI: Dropdown Menu System
+-- [[ REDIX ELITE v23 - ULTIMATE COLOR FORCE ]] --
+-- Fix: TextColor3 Overwrite Protection
+-- Feature: Team Color Sync & Dropdown
 
 local Players = game:GetService("Players")
 local Teams = game:GetService("Teams")
@@ -9,10 +9,10 @@ local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 
 -- PANEL TEMİZLİĞİ
-if Player.PlayerGui:FindFirstChild("REDIX_V22") then Player.PlayerGui.REDIX_V22:Destroy() end
+if Player.PlayerGui:FindFirstChild("REDIX_V23") then Player.PlayerGui.REDIX_V23:Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui", Player.PlayerGui)
-ScreenGui.Name = "REDIX_V22"
+ScreenGui.Name = "REDIX_V23"
 ScreenGui.ResetOnSpawn = false
 
 -- ANA PANEL
@@ -23,7 +23,7 @@ Main.AnchorPoint = Vector2.new(0.5, 0.5)
 Main.BackgroundColor3 = Color3.fromRGB(12, 12, 15)
 Main.BorderSizePixel = 0
 Main.Active = true
-Main.Draggable = true -- Sürüklenebilir panel
+Main.Draggable = true
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 Instance.new("UIStroke", Main).Color = Color3.fromRGB(85, 95, 210)
 
@@ -35,7 +35,7 @@ Scroll.CanvasSize = UDim2.new(0, 0, 1.5, 0)
 Scroll.ScrollBarThickness = 2
 Instance.new("UIListLayout", Scroll).Padding = UDim.new(0, 8)
 
--- INPUT SİSTEMİ (İSİM & RÜTBE)
+-- INPUT SİSTEMİ
 local function CreateInp(title, placeholder)
     local f = Instance.new("Frame", Scroll)
     f.Size = UDim2.new(1, 0, 0, 45)
@@ -70,10 +70,10 @@ local function CreateInp(title, placeholder)
     return box, rgb
 end
 
-local NameIn, NameCol = CreateInp("İSİM DEĞİŞTİR", "Karakter Adı...")
-local RankIn, RankCol = CreateInp("RÜTBE DEĞİŞTİR", "Yeni Rütbe...")
+local NameIn, NameCol = CreateInp("İSİM DEĞİŞTİR", "Metin...")
+local RankIn, RankCol = CreateInp("RÜTBE DEĞİŞTİR", "Kral...")
 
--- TAKIM DROPDOWN (TIKLA-AÇ SİSTEMİ)
+-- TAKIM DROPDOWN (TIKLA-AÇ)
 local DropFrame = Instance.new("Frame", Scroll)
 DropFrame.Size = UDim2.new(1, 0, 0, 45)
 DropFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
@@ -127,12 +127,12 @@ Apply.Size = UDim2.new(0.9, 0, 0, 50)
 Apply.Position = UDim2.new(0.5, 0, 1, -40)
 Apply.AnchorPoint = Vector2.new(0.5, 0.5)
 Apply.BackgroundColor3 = Color3.fromRGB(85, 95, 210)
-Apply.Text = "AYARLARI KAYDET VE UYGULA"
+Apply.Text = "NAMETAGLARI GÜNCELLE"
 Apply.Font = Enum.Font.GothamBlack
 Apply.TextColor3 = Color3.new(1,1,1)
 Instance.new("UICorner", Apply)
 
--- RENK VE İSİM GÜNCELLEME (FORCED SİSTEM)
+-- RENK FİKSLEME FONKSİYONU
 Apply.MouseButton1Click:Connect(function()
     local char = Player.Character
     if not char then return end
@@ -142,29 +142,35 @@ Apply.MouseButton1Click:Connect(function()
         return (r and g and b) and Color3.fromRGB(r,g,b) or Color3.new(1,1,1)
     end
 
-    -- BillboardGui taraması (Nametagler genelde buradadır)
+    local nColor = GetRGB(NameCol.Text)
+    local rColor = GetRGB(RankCol.Text)
+
     for _, tag in pairs(char:GetDescendants()) do
-        if tag:IsA("BillboardGui") or tag:IsA("SurfaceGui") then
+        if tag:IsA("BillboardGui") then
             for _, v in pairs(tag:GetDescendants()) do
                 if v:IsA("TextLabel") then
                     local textLower = v.Text:lower()
                     
-                    -- İsim Değiştir & Renk Ver
-                    if NameIn.Text ~= "" and (textLower:find(Player.Name:lower()) or v.Name:lower():find("name") or v.Name:lower():find("isim")) then
+                    -- İsim ve Renk
+                    if NameIn.Text ~= "" and (textLower:find(Player.Name:lower()) or v.Name:lower():find("name")) then
                         v.Text = NameIn.Text
-                        v.TextColor3 = GetRGB(NameCol.Text)
+                        v.TextColor3 = nColor
+                        -- RENK OVERWRITE KORUMASI:
+                        v:GetPropertyChangedSignal("TextColor3"):Connect(function() v.TextColor3 = nColor end)
                     end
                     
-                    -- Rütbe Değiştir & Renk Ver
-                    if RankIn.Text ~= "" and (v.Name:lower():find("rank") or v.Name:lower():find("rutbe") or v.Name:lower():find("rütbe")) then
+                    -- Rütbe ve Renk
+                    if RankIn.Text ~= "" and (v.Name:lower():find("rank") or v.Name:lower():find("rütbe") or textLower:find("kral")) then
                         v.Text = RankIn.Text
-                        v.TextColor3 = GetRGB(RankCol.Text)
+                        v.TextColor3 = rColor
+                        v:GetPropertyChangedSignal("TextColor3"):Connect(function() v.TextColor3 = rColor end)
                     end
                     
-                    -- TAKIM VE RENK (KESİN ÇÖZÜM)
-                    if SelTeam ~= "" and (v.Name:lower():find("team") or v.Name:lower():find("takim") or v.Name:lower():find("takım")) then
+                    -- Takım ve Takım Rengi
+                    if SelTeam ~= "" and (v.Name:lower():find("team") or v.Name:lower():find("takım") or textLower:find("hapis") or textLower:find("dy")) then
                         v.Text = SelTeam
-                        v.TextColor3 = SelTeamCol -- Takımın kendi rengini basar
+                        v.TextColor3 = SelTeamCol
+                        v:GetPropertyChangedSignal("TextColor3"):Connect(function() v.TextColor3 = SelTeamCol end)
                     end
                 end
             end
@@ -180,6 +186,6 @@ Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 Toggle.Text = "RE"
 Toggle.Font = Enum.Font.GothamBlack
 Toggle.TextColor3 = Color3.fromRGB(85, 95, 210)
-Toggle.Draggable = true -- İstediğin yere taşı
+Toggle.Draggable = true
 Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0)
 Toggle.MouseButton1Click:Connect(function() Main.Visible = not Main.Visible end)
